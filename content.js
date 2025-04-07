@@ -76,8 +76,33 @@
     }
   };
 
+  // Check if the interface is disabled
+  const isMinimalistDisabled = async () => {
+    return new Promise(resolve => {
+      chrome.storage.local.get('minimalistDisabled', (result) => {
+        // First check Chrome storage
+        if (result.minimalistDisabled === true) {
+          console.log('YouTube Minimalist: Disabled via extension storage');
+          resolve(true);
+          return;
+        }
+        
+        // Then check localStorage (for backwards compatibility)
+        if (localStorage.getItem('youtube-minimalist-disabled') === 'true') {
+          console.log('YouTube Minimalist: Disabled by user preference in localStorage');
+          // Also update Chrome storage to match
+          chrome.storage.local.set({ minimalistDisabled: true });
+          resolve(true);
+          return;
+        }
+        
+        resolve(false);
+      });
+    });
+  };
+
   // Create our minimalist interface
-  const createMinimalistInterface = () => {
+  const createMinimalistInterface = async () => {
     // Only apply on the homepage
     if (!isYouTubeHomepage()) {
       console.log('YouTube Minimalist: Not on homepage, skipping');
@@ -98,8 +123,7 @@
     }
 
     // Check if user has disabled the minimalist interface
-    if (localStorage.getItem('youtube-minimalist-disabled') === 'true') {
-      console.log('YouTube Minimalist: Disabled by user preference');
+    if (await isMinimalistDisabled()) {
       if (document.getElementById('youtube-minimalist-hide-style')) {
         document.getElementById('youtube-minimalist-hide-style').remove();
         document.documentElement.classList.add('minimalist-ready');
@@ -201,8 +225,11 @@
     restoreLink.textContent = 'Restore Original YouTube';
     restoreLink.onclick = (e) => {
       e.preventDefault();
+      // Update both storage mechanisms
       localStorage.setItem('youtube-minimalist-disabled', 'true');
-      window.location.reload();
+      chrome.storage.local.set({ minimalistDisabled: true }, () => {
+        window.location.reload();
+      });
     };
 
     footer.appendChild(restoreLink);
@@ -270,6 +297,17 @@
           document.documentElement.classList.add('minimalist-ready');
           document.body.classList.add('minimalist-ready');
         }
+      }
+    } else if (message.action === 'toggleMinimalist') {
+      console.log('YouTube Minimalist: Received toggle message, setting to', message.enabled ? 'enabled' : 'disabled');
+      
+      // Update both storage mechanisms
+      localStorage.setItem('youtube-minimalist-disabled', message.enabled ? 'false' : 'true');
+      chrome.storage.local.set({ minimalistDisabled: !message.enabled });
+      
+      // If we're enabling and on homepage, apply minimalist interface
+      if (message.enabled && isYouTubeHomepage()) {
+        setTimeout(createMinimalistInterface, 50);
       }
     }
   });
