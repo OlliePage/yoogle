@@ -1,34 +1,44 @@
 (function() {
   console.log('YouTube Minimalist: Content script loaded');
 
+  // Check if we're on the homepage
+  const isYouTubeHomepage = () => {
+    return window.location.pathname === '/' && 
+           (window.location.hostname === 'www.youtube.com' || 
+            window.location.hostname === 'youtube.com');
+  };
+
   // Add a style to hide YouTube content immediately while our interface loads
-  const hideYouTubeStyle = document.createElement('style');
-  hideYouTubeStyle.id = 'youtube-minimalist-hide-style';
-  hideYouTubeStyle.textContent = `
-    html, body {
-      visibility: hidden !important;
-      opacity: 0 !important;
-      transition: opacity 0.2s ease !important;
-    }
-    
-    body.minimalist-ready, html.minimalist-ready {
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
-  `;
-  
-  // Add the style as early as possible
-  if (document.documentElement) {
-    document.documentElement.appendChild(hideYouTubeStyle);
-  } else {
-    // If document not ready, add as soon as it is
-    const observer = new MutationObserver(() => {
-      if (document.documentElement) {
-        document.documentElement.appendChild(hideYouTubeStyle);
-        observer.disconnect();
+  // but ONLY on the YouTube homepage
+  if (isYouTubeHomepage()) {
+    const hideYouTubeStyle = document.createElement('style');
+    hideYouTubeStyle.id = 'youtube-minimalist-hide-style';
+    hideYouTubeStyle.textContent = `
+      html, body {
+        visibility: hidden !important;
+        opacity: 0 !important;
+        transition: opacity 0.2s ease !important;
       }
-    });
-    observer.observe(document, { childList: true, subtree: true });
+      
+      body.minimalist-ready, html.minimalist-ready {
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+    `;
+    
+    // Add the style as early as possible
+    if (document.documentElement) {
+      document.documentElement.appendChild(hideYouTubeStyle);
+    } else {
+      // If document not ready, add as soon as it is
+      const observer = new MutationObserver(() => {
+        if (document.documentElement) {
+          document.documentElement.appendChild(hideYouTubeStyle);
+          observer.disconnect();
+        }
+      });
+      observer.observe(document, { childList: true, subtree: true });
+    }
   }
 
   // Get dark mode preference from localStorage or YouTube's existing preference
@@ -64,13 +74,6 @@
     } else {
       document.body.classList.remove('dark-mode');
     }
-  };
-
-  // Check if we're on the homepage
-  const isYouTubeHomepage = () => {
-    return window.location.pathname === '/' && 
-           (window.location.hostname === 'www.youtube.com' || 
-            window.location.hostname === 'youtube.com');
   };
 
   // Create our minimalist interface
@@ -142,6 +145,20 @@
     searchForm.id = 'minimalist-search-form';
     searchForm.action = '/results';
     searchForm.method = 'get';
+    
+    // Make sure the search form doesn't use our custom styling
+    searchForm.addEventListener('submit', () => {
+      // Remove our hiding style before form submission
+      const style = document.getElementById('youtube-minimalist-hide-style');
+      if (style) style.remove();
+      
+      // Make sure body and html are visible
+      document.documentElement.classList.add('minimalist-ready');
+      document.body.classList.add('minimalist-ready');
+      
+      // Let the form submit and YouTube handle the search
+      return true;
+    });
 
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
@@ -217,33 +234,48 @@
     console.log('YouTube Minimalist: Interface applied successfully');
   };
 
-  // Try to apply as early as possible
-  if (document.readyState === 'loading') {
-    // Document still loading, add event listener
-    document.addEventListener('DOMContentLoaded', () => {
-      if (isYouTubeHomepage()) {
+  // Try to apply as early as possible, but only on the homepage
+  if (isYouTubeHomepage()) {
+    if (document.readyState === 'loading') {
+      // Document still loading, add event listener
+      document.addEventListener('DOMContentLoaded', () => {
         createMinimalistInterface();
-      }
+      });
+    } else {
+      // Document already loaded
+      createMinimalistInterface();
+    }
+
+    // Also apply on document ready as a fallback
+    window.addEventListener('load', () => {
+      createMinimalistInterface();
     });
   } else {
-    // Document already loaded
-    if (isYouTubeHomepage()) {
-      createMinimalistInterface();
+    // Not on homepage, ensure we're visible if the style was added
+    const style = document.getElementById('youtube-minimalist-hide-style');
+    if (style) {
+      style.remove();
+      document.documentElement.classList.add('minimalist-ready');
+      document.body.classList.add('minimalist-ready');
     }
   }
-
-  // Also apply on document ready as a fallback
-  window.addEventListener('load', () => {
-    if (isYouTubeHomepage()) {
-      createMinimalistInterface();
-    }
-  });
 
   // Listen for messages from the background script
   chrome.runtime.onMessage.addListener((message) => {
     if (message.action === 'applyMinimalist') {
       console.log('YouTube Minimalist: Received message to apply interface');
-      setTimeout(createMinimalistInterface, 50); // Reduced timeout
+      
+      if (isYouTubeHomepage()) {
+        setTimeout(createMinimalistInterface, 50); // Reduced timeout
+      } else {
+        // Not on homepage, ensure we're visible if the style was added
+        const style = document.getElementById('youtube-minimalist-hide-style');
+        if (style) {
+          style.remove();
+          document.documentElement.classList.add('minimalist-ready');
+          document.body.classList.add('minimalist-ready');
+        }
+      }
     }
   });
 })();
