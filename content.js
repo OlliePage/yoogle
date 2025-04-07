@@ -169,13 +169,7 @@
     searchInput.autocomplete = 'off';
     searchInput.autofocus = true;
 
-    const searchButton = document.createElement('button');
-    searchButton.type = 'submit';
-    searchButton.id = 'minimalist-search-button';
-    searchButton.textContent = 'Search';
-
     searchForm.appendChild(searchInput);
-    searchForm.appendChild(searchButton);
 
     // Add theme toggle button
     const themeToggle = document.createElement('button');
