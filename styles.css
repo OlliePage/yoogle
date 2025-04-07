@@ -1,0 +1,146 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+body.dark-mode {
+  color: #f1f1f1;
+}
+
+#minimalist-youtube-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+#yt-logo-container {
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 584px;
+}
+
+#yt-minimalist-logo {
+  height: auto;
+  width: 272px; /* Approximately the width of Google's logo */
+  max-width: 90%;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: transparent;
+}
+
+#minimalist-search-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 584px;
+}
+
+#minimalist-search-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 16px;
+  font-size: 16px;
+  border: 1px solid #dfe1e5;
+  border-radius: 24px;
+  outline: none;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+
+.dark-mode #minimalist-search-input {
+  background-color: #121212;
+  color: #f1f1f1;
+  border-color: #3d3d3d;
+}
+
+#minimalist-search-input:focus {
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+  border-color: rgba(223, 225, 229, 0);
+}
+
+.dark-mode #minimalist-search-input:focus {
+  box-shadow: 0 1px 6px rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+#minimalist-search-button {
+  background-color: #f8f9fa;
+  border: 1px solid #f8f9fa;
+  border-radius: 4px;
+  color: #3c4043;
+  font-size: 14px;
+  padding: 0 16px;
+  height: 36px;
+  min-width: 120px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dark-mode #minimalist-search-button {
+  background-color: #3ea6ff;
+  border-color: #3ea6ff;
+  color: #ffffff;
+}
+
+#minimalist-search-button:hover {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  background-color: #f8f9fa;
+  border: 1px solid #dadce0;
+  color: #202124;
+}
+
+.dark-mode #minimalist-search-button:hover {
+  background-color: #65b5ff;
+  border-color: #65b5ff;
+}
+
+#minimalist-footer {
+  position: absolute;
+  bottom: 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#minimalist-footer a {
+  color: #70757a;
+  text-decoration: none;
+}
+
+.dark-mode #minimalist-footer a {
+  color: #aaa;
+}
+
+#minimalist-footer a:hover {
+  text-decoration: underline;
+}
+
+#theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#theme-toggle:hover {
+  opacity: 0.8;
+}
