@@ -111,9 +111,9 @@
     // Get dark mode setting
     const darkMode = isDarkMode();
 
-    // Preload YouTube logo for faster display
+    // Preload local YouTube logo SVG for faster display
     const preloadLogo = new Image();
-    preloadLogo.src = 'https://www.youtube.com/img/desktop/yt_1200.png';
+    preloadLogo.src = chrome.runtime.getURL('youtube.svg');
 
     // Clear existing content
     document.body.innerHTML = '';
@@ -134,9 +134,10 @@
     logoContainer.id = 'yt-logo-container';
 
     const logo = document.createElement('img');
-    logo.src = 'https://www.youtube.com/img/desktop/yt_1200.png';
+    logo.src = chrome.runtime.getURL('youtube.svg');
     logo.id = 'yt-minimalist-logo';
     logo.alt = 'YouTube';
+    logo.classList.add('svg-logo');
 
     logoContainer.appendChild(logo);
 

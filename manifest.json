@@ -16,6 +16,12 @@
       "run_at": "document_start"
     }
   ],
+  "web_accessible_resources": [
+    {
+      "resources": ["youtube.svg"],
+      "matches": ["*://*.youtube.com/*"]
+    }
+  ],
   "icons": {
     "24": "icon24.png",
     "48": "icon48.png",

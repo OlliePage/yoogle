@@ -33,11 +33,19 @@ body.dark-mode {
 
 #yt-minimalist-logo {
   height: auto;
-  width: 272px; /* Approximately the width of Google's logo */
+  width: 200px; /* Smaller width for the SVG logo */
   max-width: 90%;
   object-fit: contain;
-  border-radius: 8px;
   background-color: transparent;
+}
+
+#yt-minimalist-logo.svg-logo {
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.05));
+}
+
+.dark-mode #yt-minimalist-logo.svg-logo {
+  /* Optional: Add a subtle glow in dark mode */
+  filter: drop-shadow(0 1px 2px rgba(255,255,255,0.1));
 }
 
 #minimalist-search-form {
