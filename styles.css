@@ -89,6 +89,33 @@ body.dark-mode {
   border-color: rgba(223, 225, 229, 0.8);
 }
 
+/* Quick access links */
+#quick-access-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 15px 0 30px 0;
+  width: 100%;
+  max-width: 584px;
+  font-size: 15px;
+}
+
+.quick-access-link {
+  color: #1a73e8;
+  text-decoration: none;
+  padding: 0 5px;
+  transition: all 0.2s ease;
+  font-size: 15px;
+}
+
+.quick-access-link.dark {
+  color: #8ab4f8;
+}
+
+.quick-access-link:hover {
+  text-decoration: underline;
+}
+
 #minimalist-footer {
   position: absolute;
   bottom: 20px;

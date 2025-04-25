@@ -194,7 +194,53 @@
     searchInput.autofocus = true;
 
     searchForm.appendChild(searchInput);
+    
+    // Create quick access links container
+    const linksContainer = document.createElement('div');
+    linksContainer.id = 'quick-access-links';
 
+    // Helper function to create quick access links
+    function createQuickAccessLink(title, url, isDarkMode) {
+      const link = document.createElement('a');
+      link.href = url;
+      link.className = 'quick-access-link';
+      if (isDarkMode) {
+        link.classList.add('dark');
+      }
+      
+      link.textContent = title;
+      
+      return link;
+    }
+
+    // Create History link
+    const historyLink = createQuickAccessLink(
+      'History', 
+      'https://www.youtube.com/feed/history',
+      darkMode
+    );
+    
+    // Create Watch Later link
+    const watchLaterLink = createQuickAccessLink(
+      'Watch Later', 
+      'https://www.youtube.com/playlist?list=WL',
+      darkMode
+    );
+    
+    // Create Liked Videos link
+    const likedVideosLink = createQuickAccessLink(
+      'Liked Videos', 
+      'https://www.youtube.com/playlist?list=LL',
+      darkMode
+    );
+
+    // Add links to container
+    linksContainer.appendChild(historyLink);
+    linksContainer.appendChild(document.createTextNode(' · '));
+    linksContainer.appendChild(watchLaterLink);
+    linksContainer.appendChild(document.createTextNode(' · '));
+    linksContainer.appendChild(likedVideosLink);
+    
     // Add theme toggle button
     const themeToggle = document.createElement('button');
     themeToggle.id = 'theme-toggle';
@@ -207,6 +253,16 @@
       themeToggle.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
       document.body.style.backgroundColor = isDark ? '#212121' : 'white';
       document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+      
+      // Update link colors for dark/light mode
+      const links = document.querySelectorAll('.quick-access-link');
+      links.forEach(link => {
+        if (isDark) {
+          link.classList.add('dark');
+        } else {
+          link.classList.remove('dark');
+        }
+      });
       
       // Force a repaint to fix any rendering issues
       const container = document.getElementById('minimalist-youtube-container');
@@ -239,6 +295,7 @@
     // Assemble the page
     container.appendChild(logoContainer);
     container.appendChild(searchForm);
+    container.appendChild(linksContainer);
     container.appendChild(footer);
     document.body.appendChild(container);
 
